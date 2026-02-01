@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container" style="padding: 4rem 10%; min-height: 80vh;">
+    <nav style="margin-bottom: 2rem; font-size: 0.9rem; color: #666;">
+        <a href="/" style="color: var(--primary); text-decoration: none;">Home</a> / 
+        <a href="#" style="color: var(--primary); text-decoration: none;">{{ product.category }}</a> / 
+        {{ product.name }}
+    </nav>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start;">
+        
+        <div class="zoom-container" style="position: relative; overflow: hidden; border-radius: 20px; cursor: zoom-in; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+            <img id="product-image" src="{{ url_for('static', filename='img/' + product.image_file) }}" 
+                 alt="{{ product.name }}" 
+                 style="width: 100%; height: 600px; object-fit: cover; transition: transform 0.1s ease-out;">
+        </div>
+
+        <div>
+            <span style="background: var(--accent); color: white; padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">
+                {{ product.category }}
+            </span>
+            
+            <h1 style="font-size: 2.5rem; color: var(--primary); margin: 1rem 0;">{{ product.name }}</h1>
+            
+            <div style="font-size: 2rem; font-weight: 700; color: var(--dark); margin-bottom: 1.5rem;">
+                KSh {{ "{:,.0f}".format(product.price) }}
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #ddd; margin-bottom: 2rem;">
+
+            <h3 style="color: var(--primary);">Product Description</h3>
+            <p style="line-height: 1.8; color: #444; font-size: 1.1rem; margin-bottom: 2rem;">
+                {{ product.description }}
+            </p>
+
+            <div style="display: flex; align-items: center; margin-bottom: 2rem;">
+                <div style="width: 12px; height: 12px; background: #4caf50; border-radius: 50%; margin-right: 10px;"></div>
+                <span style="font-weight: 600; color: #4caf50;">In Stock ({{ product.stock_quantity }} units available)</span>
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+                <button class="cta-btn" style="background: var(--primary); color: white; border: none; padding: 1rem 2.5rem; border-radius: 8px; font-weight: bold; cursor: pointer; flex: 1; transition: 0.3s;">
+                    Add to Inquiry
+                </button>
+                <button class="wishlist-btn" style="background: transparent; border: 2px solid var(--primary); color: var(--primary); padding: 1rem 1.5rem; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s;">
+                    ♥
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const container = document.querySelector('.zoom-container');
+    const img = document.getElementById('product-image');
+
+    container.addEventListener('mousemove', (e) => {
+        const x = e.clientX - e.target.offsetLeft;
+        const y = e.clientY - e.target.offsetTop;
+
+        img.style.transformOrigin = `${e.offsetX}px ${e.offsetY}px`;
+        img.style.transform = "scale(2)";
+    });
+
+    container.addEventListener('mouseleave', () => {
+        img.style.transformOrigin = "center";
+        img.style.transform = "scale(1)";
+    });
+</script>
+
+<style>
+    .cta-btn:hover { background: var(--accent) !important; transform: translateY(-2px); }
+    .wishlist-btn:hover { background: var(--primary) !important; color: white !important; }
+    #product-image { pointer-events: none; }
+</style>
+{% endblock %}

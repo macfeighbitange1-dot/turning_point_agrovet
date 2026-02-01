@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container" style="padding: 4rem 10%; max-width: 1200px; margin: 0 auto;">
+    <div style="text-align: center; margin-bottom: 4rem;">
+        <h1 style="color: var(--primary); font-size: 2.5rem;">Professional Agricultural Consultancy</h1>
+        <p style="color: #666; font-size: 1.1rem;">Bridge the gap between traditional farming and modern science.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 4rem; align-items: start;">
+        <div>
+            <div style="margin-bottom: 2rem;">
+                <h3 style="color: var(--primary);">Expert Guidance</h3>
+                <p>Access 0.1% genius-level insights on crop rotation, pest management, and livestock optimization.</p>
+            </div>
+            <div style="margin-bottom: 2rem;">
+                <h3 style="color: var(--primary);">Yield Optimization</h3>
+                <p>We don't just sell products; we ensure they work for your specific farm environment.</p>
+            </div>
+            <div style="background: var(--light); padding: 2rem; border-radius: 15px; border-left: 5px solid var(--accent);">
+                <p style="margin: 0; font-style: italic; color: #444;">"Turning Point increased my maize yield by 40% through their field visit program."</p>
+                <p style="margin-top: 10px; font-weight: bold;">— Farmer Joseph, Nakuru</p>
+            </div>
+        </div>
+
+        <div class="card" style="padding: 3rem; border-radius: 20px;">
+            <form action="/consultancy" method="POST">
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Full Name</label>
+                    <input type="text" name="name" required style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px; outline: none;">
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Phone Number</label>
+                    <input type="tel" name="phone" required style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px; outline: none;" value="254">
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Consultancy Type</label>
+                    <select name="type" style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px; outline: none; background: white;">
+                        <option value="crop">Crop Protection & Management</option>
+                        <option value="livestock">Livestock Nutrition & Health</option>
+                        <option value="soil">Soil Health & Nutrition</option>
+                        <option value="general">General Agribusiness Setup</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 2rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Briefly describe your challenge</label>
+                    <textarea name="message" rows="4" style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px; outline: none; font-family: inherit;"></textarea>
+                </div>
+
+                <button type="submit" class="cta-btn" style="width: 100%; background: var(--primary); color: white; border: none; padding: 1rem; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1.1rem; transition: 0.3s;">
+                    Request Consultation
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

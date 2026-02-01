@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container" style="padding: 4rem 10%; max-width: 1000px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--primary); padding-bottom: 1rem;">
+        <h1 style="color: var(--primary); margin: 0;">Your Shopping Cart</h1>
+        {% if products %}
+            <a href="{{ url_for('clear_cart') }}" style="color: #d9534f; text-decoration: none; font-weight: 600; font-size: 0.9rem; padding: 5px 10px; border: 1px solid #d9534f; border-radius: 5px;">Clear Cart</a>
+        {% endif %}
+    </div>
+
+    {% if products %}
+        <div style="margin-top: 2rem;">
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 2rem;">
+                <thead>
+                    <tr style="background: var(--primary); color: white; text-align: left;">
+                        <th style="padding: 1rem;">Product</th>
+                        <th style="padding: 1rem;">Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td style="padding: 1rem; font-weight: 500;">{{ product.name }}</td>
+                        <td style="padding: 1rem;">KSh {{ "{:,.0f}".format(product.price) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr style="font-size: 1.4rem; font-weight: 700; color: var(--primary);">
+                        <td style="padding: 1rem; text-align: right;">Total:</td>
+                        <td style="padding: 1rem;">KSh {{ "{:,.0f}".format(total) }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <a id="whatsapp-checkout" href="#" 
+                   style="display: block; text-align: center; background: #25d366; color: white; padding: 1.2rem; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 1.2rem; transition: 0.3s;">
+                   Complete Order via WhatsApp
+                </a>
+                
+                <a href="/" style="text-align: center; color: var(--primary); text-decoration: none; font-weight: 500;">← Continue Shopping</a>
+            </div>
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 5rem 0;">
+            <p style="font-size: 1.2rem; color: #666;">Your cart is currently empty.</p>
+            <a href="/" class="buy-btn" style="display: inline-block; width: auto; padding: 1rem 2rem; margin-top: 1rem; text-decoration: none; background: var(--primary); color: white; border-radius: 8px;">Start Shopping</a>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkoutBtn = document.getElementById('whatsapp-checkout');
+        if (checkoutBtn) {
+            let message = "Hello Turning Point Agrovet! I would like to order:\n\n";
+            {% for product in products %}
+                message += "- {{ product.name }} (KSh {{ '{:,.0f}'.format(product.price) }})\n";
+            {% endfor %}
+            message += "\n*Total: KSh {{ '{:,.0f}'.format(total) }}*";
+            
+            const encodedMessage = encodeURIComponent(message);
+            checkoutBtn.href = `https://wa.me/254722415182?text=${encodedMessage}`;
+        }
+    });
+</script>
+{% endblock %}

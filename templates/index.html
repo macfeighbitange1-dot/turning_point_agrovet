@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+    <h1>Modern Solutions for Modern Farmers</h1>
+    <p>Empowering the agricultural community with science-backed products.</p>
+    <button class="cta-btn" onclick="document.querySelector('.product-grid').scrollIntoView({behavior: 'smooth'})">View Our Catalog</button>
+</section>
+
+{% if query %}
+<div style="padding: 2rem 10% 0 10%; text-align: left;">
+    <h2 style="color: var(--primary); margin-bottom: 0.5rem;">Search Results for "{{ query }}"</h2>
+    <p style="color: #666;">Found {{ products|length }} product(s) matching your request.</p>
+    <hr style="border: 0; border-top: 1px solid #eee; margin-top: 1.5rem;">
+</div>
+{% endif %}
+
+<section class="product-grid">
+    {% for product in products %}
+    <div class="card">
+        <div class="card-img-container">
+            <img src="{{ url_for('static', filename='img/' + product.image_file) }}" alt="{{ product.name }}">
+            
+            <div class="card-overlay">
+                <a href="{{ url_for('product_detail', product_id=product.id) }}" class="view-btn">View Details</a>
+            </div>
+        </div>
+
+        <div class="card-content">
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description[:80] }}...</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; margin-bottom: 1rem;">
+                <span style="font-weight: bold; color: var(--primary); font-size: 1.2rem;">KSh {{ "{:,.0f}".format(product.price) }}</span>
+                <a href="{{ url_for('product_detail', product_id=product.id) }}" style="text-decoration: none; color: var(--primary); font-weight: 600; font-size: 0.85rem;">Learn More →</a>
+            </div>
+            
+            <button class="buy-btn" onclick="addToCart({{ product.id }}, event)">
+                Add to Cart
+            </button>
+        </div>
+    </div>
+    {% else %}
+    <div style="grid-column: 1 / -1; text-align: center; padding: 4rem;">
+        <h3 style="color: #888;">No products found matching your search.</h3>
+        <a href="/" style="color: var(--primary); font-weight: bold; text-decoration: none;">View All Products</a>
+    </div>
+    {% endfor %}
+</section>
+
+<script>
+    function addToCart(productId, event) {
+        const btn = event.target;
+        
+        // Background request to app.py to save item in session
+        fetch(`/add_to_cart/${productId}`)
+            .then(response => {
+                if (response.ok) {
+                    // Update the visual counter
+                    const cartCount = document.getElementById('cart-count');
+                    let currentCount = parseInt(cartCount.innerText);
+                    cartCount.innerText = currentCount + 1;
+
+                    // Genius-level visual feedback
+                    const originalText = btn.innerText;
+                    btn.innerText = "✓ Added";
+                    btn.style.backgroundColor = "#1e3d1a";
+                    btn.disabled = true; // Prevent double-clicks
+                    
+                    setTimeout(() => {
+                        btn.innerText = originalText;
+                        btn.style.backgroundColor = "";
+                        btn.disabled = false;
+                    }, 1500);
+                }
+            })
+            .catch(err => console.error("Cart update failed:", err));
+    }
+</script>
+{% endblock %}
