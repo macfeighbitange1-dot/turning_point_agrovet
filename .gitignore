@@ -1,0 +1,20 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Databases (We let the server create these fresh)
+instance/
+*.db
+
+# Virtual Environments
+venv/
+env/
+.venv/
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Flask session/temp files
+.flaskenv
