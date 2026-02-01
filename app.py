@@ -16,11 +16,16 @@ app.config.update(
     SESSION_COOKIE_HTTPONLY=True
 )
 
-# Initialize extensions with the app context
+# Initialize extensions
 db.init_app(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
+
+# PRODUCTION DATABASE INITIALIZATION
+# This ensures tables are created even when running via Gunicorn on Render
+with app.app_context():
+    db.create_all()
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -89,10 +94,6 @@ def consultancy():
         return redirect(url_for('home'))
     return render_template('consultancy.html', title="Expert Consultancy")
 
-# 3. SELF-HEALING DATABASE INITIALIZATION
+# 3. LOCAL DEVELOPMENT RUNNER
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-        print("Database initialized successfully.")
-    
     app.run(debug=True, port=5001)
