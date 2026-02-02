@@ -29,6 +29,7 @@
         filter: brightness(1.1);
     }
 
+    /* Optimized slide delays for smooth transitions */
     .slide:nth-child(1) { 
         background-image: url('https://images.unsplash.com/photo-1536330491564-c39c20077c9a?q=80&w=2000');
         animation-delay: 0s; 
@@ -95,9 +96,9 @@
     </div>
     <div class="hero-overlay"></div>
     <div class="hero-content">
-        <h1>Modern Solutions for Modern Farmers</h1>
-        <p>Empowering the agricultural community with science-backed products.</p>
-        <button class="cta-btn" onclick="document.querySelector('.product-grid').scrollIntoView({behavior: 'smooth'})">View Our Catalog</button>
+        <h1>Empowering Kirinyaga's Modern Farmers</h1>
+        <p>Providing Mwea, Kerugoya, and Kutus with science-backed agricultural solutions.</p>
+        <button class="cta-btn" onclick="document.querySelector('.product-grid').scrollIntoView({behavior: 'smooth'})">Explore Our Catalog</button>
     </div>
 </section>
 
@@ -139,8 +140,8 @@
 </section>
 
 <section class="testimonials-section">
-    <h2 style="color: var(--primary); margin-bottom: 10px;">What Our Farmers Say</h2>
-    <p style="color: #666;">Maoni ya wakulima wetu kuhusu huduma zetu.</p>
+    <h2 style="color: var(--primary); margin-bottom: 10px;">Voices of Kirinyaga Farmers</h2>
+    <p style="color: #666;">Maoni ya wakulima wa Kirinyaga kuhusu huduma zetu.</p>
     
     <div class="testimonial-grid">
         {% if reviews %}
@@ -153,14 +154,9 @@
             {% endfor %}
         {% else %}
             <div class="testimonial-card">
-                <p>"The Hybrid Maize seeds gave me a 40% higher yield this season compared to last year. Excellent quality!"</p>
-                <span>— Peter Kamau</span>
-                <small>Trans Nzoia County</small>
-            </div>
-            <div class="testimonial-card">
-                <p>"Huduma zao ni za kipekee. Mbolea ya DAP ilifika kwa wakati na mazao yangu yameongezeka sana."</p>
-                <span>— Mary Atieno</span>
-                <small>Uasin Gishu County</small>
+                <p>"Turning Point Agrovet is the most trusted partner for farmers in Kirinyaga."</p>
+                <span>— Turning Point Team</span>
+                <small>Kerugoya Town</small>
             </div>
         {% endif %}
     </div>
@@ -171,7 +167,7 @@
         <h3 style="text-align: center; color: var(--primary); margin-bottom: 1.5rem;">Leave a Review / Toa Maoni</h3>
         <form action="{{ url_for('submit_review') }}" method="POST">
             <input type="text" name="name" placeholder="Your Name / Jina Lako" required>
-            <input type="text" name="location" placeholder="Your Location / Eneo Lako" required>
+            <input type="text" name="location" placeholder="Your Village or Town in Kirinyaga" required>
             <textarea name="review" rows="4" placeholder="Share your experience / Shiriki uzoefu wako..." required></textarea>
             <button type="submit">Submit Review / Tuma Maoni</button>
         </form>
