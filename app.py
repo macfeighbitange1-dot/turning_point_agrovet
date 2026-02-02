@@ -36,6 +36,23 @@ def home():
     customer_reviews = Review.query.filter_by(is_approved=True).order_by(Review.date_posted.desc()).limit(3).all()
     return render_template('index.html', products=featured_products, reviews=customer_reviews, title="Home")
 
+# --- STATIC CONTENT ROUTES ---
+@app.route('/about')
+def about():
+    return render_template('about.html', title="About Us")
+
+@app.route('/faq')
+def faq():
+    return render_template('faq.html', title="Frequently Asked Questions")
+
+@app.route('/privacy')
+def privacy():
+    return render_template('privacy.html', title="Privacy Policy")
+
+@app.route('/blog')
+def blog():
+    return render_template('blog.html', title="Farming Blog")
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -107,18 +124,15 @@ def submit_review():
 # --- SECURE RECOVERY & ADMIN SETUP ---
 @app.route('/recovery/<string:secret_key>')
 def secure_recovery(secret_key):
-    """Surgical Database Reset: Deletes old admin and creates new one with Kirinyaga2026!"""
     master_key = os.environ.get('RECOVERY_KEY')
     if not master_key or secret_key != master_key:
         abort(404) 
 
-    # Delete any existing admin to prevent session/ID conflicts
     existing_admin = User.query.filter_by(username='turning_admin').first()
     if existing_admin:
         db.session.delete(existing_admin)
         db.session.commit()
     
-    # Create fresh admin with the specific password requested
     hashed_pw = bcrypt.generate_password_hash('Kirinyaga2026!').decode('utf-8')
     admin = User(
         username='turning_admin', 
