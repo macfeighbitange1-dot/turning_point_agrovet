@@ -1,11 +1,32 @@
 {% extends "base.html" %}
+
 {% block content %}
-<div style="padding: 5rem 10%; text-align: center;">
-    <h2>Login to Turning Point Agrovet</h2>
-    <form method="POST">
-        <input type="text" name="username" placeholder="Username" required><br><br>
-        <input type="password" name="password" placeholder="Password" required><br><br>
-        <button type="submit" style="padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 5px;">Login</button>
+<div style="max-width: 400px; margin: 80px auto; padding: 30px; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); font-family: 'Inter', sans-serif;">
+    <h2 style="text-align: center; color: var(--primary); margin-bottom: 10px;">Login</h2>
+    <p style="text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 25px;">Turning Point Agrovet Admin & Buyer Portal</p>
+
+    <form method="POST" action="{{ url_for('login') }}">
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Username</label>
+            <input type="text" name="username" placeholder="Enter your username" required 
+                   style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; outline: none; transition: 0.3s;"
+                   onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='#ddd'">
+        </div>
+
+        <div style="margin-bottom: 25px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Password</label>
+            <input type="password" name="password" placeholder="Enter your password" required 
+                   style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; outline: none; transition: 0.3s;"
+                   onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='#ddd'">
+        </div>
+
+        <button type="submit" style="width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1rem;">
+            Login to Dashboard
+        </button>
     </form>
+    
+    <p style="text-align: center; margin-top: 20px; font-size: 0.85rem; color: #888;">
+        Authorized access only for Kirinyaga staff and registered farmers.
+    </p>
 </div>
 {% endblock %}
