@@ -40,9 +40,9 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    """Handles secure authentication for Owner and Buyers"""
+    """Smart authentication: Admins go to Dashboard, Buyers go Home."""
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
+        return redirect(url_for('admin_dashboard' if current_user.is_admin else 'home'))
     
     if request.method == 'POST':
         username = request.form.get('username')
@@ -51,9 +51,13 @@ def login():
         
         if user and bcrypt.check_password_hash(user.password, password):
             login_user(user)
-            next_page = request.args.get('next') # Redirect to intended page after login
             flash(f'Welcome back, {user.username}!', 'success')
-            return redirect(next_page) if next_page else redirect(url_for('home'))
+            
+            # Genius Tier Redirect: Admin goes straight to the cockpit
+            next_page = request.args.get('next')
+            if next_page:
+                return redirect(next_page)
+            return redirect(url_for('admin_dashboard' if user.is_admin else 'home'))
         else:
             flash('Login Unsuccessful. Please check username and password.', 'danger')
             
