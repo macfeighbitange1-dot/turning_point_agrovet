@@ -1,5 +1,21 @@
-Flask
-Flask-SQLAlchemy
-Flask-Bcrypt
-Flask-Login
-gunicorn
+# Python bytecode (the __pycache__ folders that cluttered your git status)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment & Databases (Never push your local DB to GitHub)
+instance/
+*.db
+.env
+venv/
+env/
+
+# IDE settings
+.vscode/
+.idea/
+
+# Distribution / Packaged
+target/
+dist/
+build/
