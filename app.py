@@ -3,8 +3,8 @@ from flask import Flask, render_template, url_for, flash, redirect, request, abo
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 
-# We import the db and models explicitly to ensure they are registered
-from models import db, Product, User
+# Import the db and models
+from models import db, Product, User, Review
 
 app = Flask(__name__)
 
@@ -33,8 +33,28 @@ def load_user(user_id):
 # 2. ROUTES
 @app.route('/')
 def home():
+    # Fetch products and reviews to display on the landing page
     featured_products = Product.query.order_by(Product.date_added.desc()).limit(6).all()
-    return render_template('index.html', products=featured_products, title="Home")
+    # Fetch the latest 3 approved reviews
+    customer_reviews = Review.query.filter_by(is_approved=True).order_by(Review.date_posted.desc()).limit(3).all()
+    return render_template('index.html', products=featured_products, reviews=customer_reviews, title="Home")
+
+@app.route('/submit_review', methods=['POST'])
+def submit_review():
+    """Route to handle bilingual review submissions"""
+    name = request.form.get('name')
+    location = request.form.get('location')
+    content = request.form.get('review')
+
+    if name and location and content:
+        new_review = Review(name=name, location=location, content=content)
+        db.session.add(new_review)
+        db.session.commit()
+        flash('Thank you! Your review has been submitted. / Ahsante! Maoni yako yametumwa.', 'success')
+    else:
+        flash('Please fill in all fields. / Tafadhali jaza nafasi zote.', 'danger')
+        
+    return redirect(url_for('home'))
 
 @app.route('/product/<int:product_id>')
 def product_detail(product_id):
@@ -59,7 +79,7 @@ def search():
         results = []
     return render_template('index.html', products=results, query=query, title="Search Results")
 
-# --- FIXED CART LOGIC ---
+# --- CART LOGIC ---
 @app.route('/add_to_cart/<int:product_id>')
 def add_to_cart(product_id):
     if 'cart' not in session:
@@ -89,7 +109,6 @@ def clear_cart():
     flash('Cart cleared successfully.', 'success')
     return redirect(url_for('cart'))
 
-# --- THE CONSULTANCY UPDATE ---
 @app.route('/consultancy', methods=['GET', 'POST'])
 def consultancy():
     if request.method == 'POST':
@@ -98,6 +117,6 @@ def consultancy():
         return redirect(url_for('home'))
     return render_template('consultancy.html', title="Expert Consultancy")
 
-# 3. LOCAL DEVELOPMENT RUNNER
+# 3. RUNNER
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
