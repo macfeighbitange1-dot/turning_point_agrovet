@@ -40,9 +40,6 @@ def home():
 def product_detail(product_id):
     product = Product.query.get_or_404(product_id)
     return render_template('product.html', product=product, title=product.name)
-    @app.route('/health')
-def health_check():
-    return "OK", 200
 
 @app.route('/health')
 def health_check():
