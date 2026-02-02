@@ -38,93 +38,38 @@ def home():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    """Allows customers to join. Prevents them from becoming admins."""
     if current_user.is_authenticated:
         return redirect(url_for('home'))
-    
     if request.method == 'POST':
         username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
-        
         user_exists = User.query.filter((User.username == username) | (User.email == email)).first()
         if user_exists:
             flash('Username or Email already taken.', 'danger')
             return redirect(url_for('register'))
-        
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
         new_user = User(username=username, email=email, password=hashed_password, is_admin=False)
-        
         db.session.add(new_user)
         db.session.commit()
         flash('Account created! You can now log in.', 'success')
         return redirect(url_for('login'))
-        
     return render_template('register.html', title='Join Us')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('admin_dashboard' if current_user.is_admin else 'home'))
-    
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
         user = User.query.filter_by(username=username).first()
-        
         if user and bcrypt.check_password_hash(user.password, password):
             login_user(user)
             flash(f'Welcome back, {user.username}!', 'success')
-            next_page = request.args.get('next')
-            if next_page:
-                return redirect(next_page)
             return redirect(url_for('admin_dashboard' if user.is_admin else 'home'))
-        else:
-            flash('Login Unsuccessful. Please check credentials.', 'danger')
-            
+        flash('Login Unsuccessful.', 'danger')
     return render_template('login.html', title='Login')
-
-@app.route('/consultancy', methods=['GET', 'POST'])
-def consultancy():
-    """Handles farmer requests for expert advice."""
-    if request.method == 'POST':
-        name = request.form.get('name')
-        phone = request.form.get('phone')
-        message = request.form.get('message')
-        
-        if name and phone:
-            new_lead = ConsultancyRequest(name=name, phone=phone, message=message)
-            db.session.add(new_lead)
-            db.session.commit()
-            flash(f'Thank you {name}! We will call you shortly.', 'success')
-            return redirect(url_for('home'))
-        flash('Name and Phone are required.', 'danger')
-        
-    return render_template('consultancy.html', title="Expert Consultancy")
-
-# --- SECURE RECOVERY SYSTEM ---
-@app.route('/recovery/<string:secret_key>')
-def secure_recovery(secret_key):
-    """Syncs the Master Admin account with Render Environment Variables."""
-    master_key = os.environ.get('RECOVERY_KEY')
-    
-    if not master_key or secret_key != master_key:
-        abort(404) 
-        
-    admin = User.query.filter_by(username='turning_admin').first()
-    new_password = os.environ.get('ADMIN_PASSWORD', 'admin123')
-    hashed_pw = bcrypt.generate_password_hash(new_password).decode('utf-8')
-    
-    if admin:
-        admin.password = hashed_pw
-        admin.is_admin = True
-    else:
-        admin = User(username='turning_admin', email='admin@tp.com', 
-                     password=hashed_pw, is_admin=True)
-        db.session.add(admin)
-        
-    db.session.commit()
-    return "Admin Credentials Synced Successfully."
 
 @app.route('/logout')
 @login_required
@@ -133,17 +78,53 @@ def logout():
     flash('Logged out successfully.', 'info')
     return redirect(url_for('home'))
 
-# --- SECURE ADMIN DASHBOARD ---
+@app.route('/consultancy', methods=['GET', 'POST'])
+def consultancy():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        phone = request.form.get('phone')
+        message = request.form.get('message')
+        if name and phone:
+            new_lead = ConsultancyRequest(name=name, phone=phone, message=message)
+            db.session.add(new_lead)
+            db.session.commit()
+            flash(f'Thank you {name}! We will call you shortly.', 'success')
+            return redirect(url_for('home'))
+    return render_template('consultancy.html', title="Expert Consultancy")
+
+# --- SECURE RECOVERY & ADMIN ---
+@app.route('/recovery/<string:secret_key>')
+def secure_recovery(secret_key):
+    master_key = os.environ.get('RECOVERY_KEY')
+    if not master_key or secret_key != master_key:
+        abort(404) 
+    admin = User.query.filter_by(username='turning_admin').first()
+    new_password = os.environ.get('ADMIN_PASSWORD', 'admin123')
+    hashed_pw = bcrypt.generate_password_hash(new_password).decode('utf-8')
+    if admin:
+        admin.password = hashed_pw
+        admin.is_admin = True
+    else:
+        admin = User(username='turning_admin', email='admin@tp.com', password=hashed_pw, is_admin=True)
+        db.session.add(admin)
+    db.session.commit()
+    return "Admin Credentials Synced Successfully."
+
 @app.route('/admin_portal')
 @login_required
 def admin_dashboard():
     if not current_user.is_admin:
         abort(403) 
-    all_reviews = Review.query.order_by(Review.date_posted.desc()).all()
-    all_consultancies = ConsultancyRequest.query.order_by(ConsultancyRequest.date_requested.desc()).all()
+    all_reviews = Review.query.all()
+    all_consultancies = ConsultancyRequest.query.all()
     return render_template('admin.html', reviews=all_reviews, consultancies=all_consultancies, title="Admin Panel")
 
 # 3. UTILITY ROUTES
+@app.route('/product/<int:product_id>')
+def product_detail(product_id):
+    product = Product.query.get_or_404(product_id)
+    return render_template('product.html', product=product, title=product.name)
+
 @app.route('/search')
 def search():
     query = request.args.get('q', '')
