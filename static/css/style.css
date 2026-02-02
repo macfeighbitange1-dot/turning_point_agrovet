@@ -40,7 +40,7 @@ nav ul li a { text-decoration: none; color: var(--white); font-weight: 500; font
 /* --- ELITE SLIDESHOW HERO --- */
 .hero {
     position: relative;
-    height: 65vh; /* Increased for better visual impact */
+    height: 70vh; /* Optimized for visual clarity */
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -50,7 +50,6 @@ nav ul li a { text-decoration: none; color: var(--white); font-weight: 500; font
     text-align: center;
 }
 
-/* Background Slideshow Logic */
 .hero-slideshow {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -63,29 +62,32 @@ nav ul li a { text-decoration: none; color: var(--white); font-weight: 500; font
     background-size: cover;
     background-position: center;
     opacity: 0;
-    animation: slideAnimation 30s infinite;
+    /* Slowed to 45s (9s per slide) for a premium, clear experience */
+    animation: slideAnimation 45s infinite linear;
+    filter: brightness(1.1); /* Boosts image clarity through the overlay */
 }
 
-/* Targeted Agricultural Images */
+/* Timing synchronization with 45s total cycle */
 .slide:nth-child(1) { background-image: url('https://images.unsplash.com/photo-1536330491564-c39c20077c9a?q=80&w=2000'); animation-delay: 0s; }
-.slide:nth-child(2) { background-image: url('https://images.unsplash.com/photo-1597333332871-d90d44283c05?q=80&w=2000'); animation-delay: 6s; }
-.slide:nth-child(3) { background-image: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2000'); animation-delay: 12s; }
-.slide:nth-child(4) { background-image: url('https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?q=80&w=2000'); animation-delay: 18s; }
-.slide:nth-child(5) { background-image: url('https://images.unsplash.com/photo-1544070078-a212eda27b49?q=80&w=2000'); animation-delay: 24s; }
+.slide:nth-child(2) { background-image: url('https://images.unsplash.com/photo-1597333332871-d90d44283c05?q=80&w=2000'); animation-delay: 9s; }
+.slide:nth-child(3) { background-image: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2000'); animation-delay: 18s; }
+.slide:nth-child(4) { background-image: url('https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?q=80&w=2000'); animation-delay: 27s; }
+.slide:nth-child(5) { background-image: url('https://images.unsplash.com/photo-1544070078-a212eda27b49?q=80&w=2000'); animation-delay: 36s; }
 
+/* Professional fade curve for high clarity duration */
 @keyframes slideAnimation {
     0% { opacity: 0; }
-    5% { opacity: 1; }
-    20% { opacity: 1; }
-    25% { opacity: 0; }
+    2% { opacity: 1; }   /* Faster fade in */
+    18% { opacity: 1; }  /* Stay visible and clear for 8+ seconds */
+    22% { opacity: 0; }  /* Smooth fade out */
     100% { opacity: 0; }
 }
 
-/* The Green Overlay */
 .hero-overlay {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(30, 61, 26, 0.75); /* Dark green tint for readability */
+    /* Slightly lighter gradient for better image clarity */
+    background: rgba(30, 61, 26, 0.7); 
     z-index: 2;
 }
 
@@ -183,7 +185,7 @@ nav ul li a { text-decoration: none; color: var(--white); font-weight: 500; font
     nav ul { gap: 10px; }
     nav ul li { margin: 0; }
     .hero { height: 50vh; }
-    .hero h1 { font-size: 1.5rem; }
+    .hero h1 { font-size: 1.8rem; }
     .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 1rem; }
     .card-img-container { height: 150px; }
     .card h3 { font-size: 0.9rem; }
