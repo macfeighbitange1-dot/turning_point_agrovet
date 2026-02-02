@@ -1,9 +1,105 @@
 {% extends "base.html" %}
 {% block content %}
+
+<style>
+    .hero {
+        position: relative;
+        height: 70vh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: white;
+    }
+
+    /* The Slideshow Container */
+    .hero-slideshow {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        z-index: 1;
+    }
+
+    .slide {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-size: cover;
+        background-position: center;
+        opacity: 0;
+        animation: slideAnimation 30s infinite; /* 6 seconds per slide x 5 slides */
+    }
+
+    /* Professional Image Sources for your specific farms */
+    .slide:nth-child(1) { 
+        background-image: url('https://images.unsplash.com/photo-1536330491564-c39c20077c9a?q=80&w=2000'); /* Rice Farm */
+        animation-delay: 0s; 
+    }
+    .slide:nth-child(2) { 
+        background-image: url('https://images.unsplash.com/photo-1597333332871-d90d44283c05?q=80&w=2000'); /* Tea Farm */
+        animation-delay: 6s; 
+    }
+    .slide:nth-child(3) { 
+        background-image: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2000'); /* Coffee Farm */
+        animation-delay: 12s; 
+    }
+    .slide:nth-child(4) { 
+        background-image: url('https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?q=80&w=2000'); /* Dairy Cows */
+        animation-delay: 18s; 
+    }
+    .slide:nth-child(5) { 
+        background-image: url('https://images.unsplash.com/photo-1544070078-a212eda27b49?q=80&w=2000'); /* Pigs */
+        animation-delay: 24s; 
+    }
+
+    @keyframes slideAnimation {
+        0% { opacity: 0; }
+        5% { opacity: 1; }
+        20% { opacity: 1; }
+        25% { opacity: 0; }
+        100% { opacity: 0; }
+    }
+
+    /* The Permanent Green Overlay for readability */
+    .hero-overlay {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(rgba(30, 61, 26, 0.75), rgba(30, 61, 26, 0.75));
+        z-index: 2;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 3;
+        padding: 0 10%;
+    }
+
+    .hero-content h1 {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+    }
+
+    .hero-content p {
+        font-size: 1.4rem;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+    }
+</style>
+
 <section class="hero">
-    <h1>Modern Solutions for Modern Farmers</h1>
-    <p>Empowering the agricultural community with science-backed products.</p>
-    <button class="cta-btn" onclick="document.querySelector('.product-grid').scrollIntoView({behavior: 'smooth'})">View Our Catalog</button>
+    <div class="hero-slideshow">
+        <div class="slide"></div>
+        <div class="slide"></div>
+        <div class="slide"></div>
+        <div class="slide"></div>
+        <div class="slide"></div>
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1>Modern Solutions for Modern Farmers</h1>
+        <p>Empowering the agricultural community with science-backed products.</p>
+        <button class="cta-btn" onclick="document.querySelector('.product-grid').scrollIntoView({behavior: 'smooth'})">View Our Catalog</button>
+    </div>
 </section>
 
 {% if query %}
@@ -14,12 +110,11 @@
 </div>
 {% endif %}
 
-<section class="product-grid">
+<section class="product-grid" style="padding: 3rem 10%;">
     {% for product in products %}
     <div class="card">
         <div class="card-img-container">
             <img src="{{ url_for('static', filename='img/' + product.image_file) }}" alt="{{ product.name }}">
-            
             <div class="card-overlay">
                 <a href="{{ url_for('product_detail', product_id=product.id) }}" class="view-btn">View Details</a>
             </div>
@@ -49,21 +144,17 @@
 <script>
     function addToCart(productId, event) {
         const btn = event.target;
-        
-        // Background request to app.py to save item in session
         fetch(`/add_to_cart/${productId}`)
             .then(response => {
                 if (response.ok) {
-                    // Update the visual counter
                     const cartCount = document.getElementById('cart-count');
-                    let currentCount = parseInt(cartCount.innerText);
+                    let currentCount = parseInt(cartCount.innerText) || 0;
                     cartCount.innerText = currentCount + 1;
 
-                    // Genius-level visual feedback
                     const originalText = btn.innerText;
                     btn.innerText = "✓ Added";
                     btn.style.backgroundColor = "#1e3d1a";
-                    btn.disabled = true; // Prevent double-clicks
+                    btn.disabled = true;
                     
                     setTimeout(() => {
                         btn.innerText = originalText;
