@@ -3,8 +3,8 @@ from flask import Flask, render_template, url_for, flash, redirect, request, abo
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 
-# Import the db and models
-from models import db, Product, User, Review
+# Import the db and models (Added ConsultancyRequest)
+from models import db, Product, User, Review, ConsultancyRequest
 
 app = Flask(__name__)
 
@@ -30,18 +30,15 @@ with app.app_context():
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# 2. ROUTES
+# 2. PUBLIC ROUTES
 @app.route('/')
 def home():
-    # Fetch products and reviews to display on the landing page
     featured_products = Product.query.order_by(Product.date_added.desc()).limit(6).all()
-    # Fetch the latest 3 approved reviews
     customer_reviews = Review.query.filter_by(is_approved=True).order_by(Review.date_posted.desc()).limit(3).all()
     return render_template('index.html', products=featured_products, reviews=customer_reviews, title="Home")
 
 @app.route('/submit_review', methods=['POST'])
 def submit_review():
-    """Route to handle bilingual review submissions"""
     name = request.form.get('name')
     location = request.form.get('location')
     content = request.form.get('review')
@@ -53,70 +50,93 @@ def submit_review():
         flash('Thank you! Your review has been submitted. / Ahsante! Maoni yako yametumwa.', 'success')
     else:
         flash('Please fill in all fields. / Tafadhali jaza nafasi zote.', 'danger')
-        
     return redirect(url_for('home'))
-
-@app.route('/product/<int:product_id>')
-def product_detail(product_id):
-    product = Product.query.get_or_404(product_id)
-    return render_template('product.html', product=product, title=product.name)
-
-@app.route('/health')
-def health_check():
-    """Route for Cron-job.org to keep the server awake"""
-    return "OK", 200
-
-@app.route('/search')
-def search():
-    query = request.args.get('q', '')
-    if query:
-        results = Product.query.filter(
-            (Product.name.icontains(query)) | 
-            (Product.category.icontains(query)) |
-            (Product.description.icontains(query))
-        ).all()
-    else:
-        results = []
-    return render_template('index.html', products=results, query=query, title="Search Results")
-
-# --- CART LOGIC ---
-@app.route('/add_to_cart/<int:product_id>')
-def add_to_cart(product_id):
-    if 'cart' not in session:
-        session['cart'] = []
-    
-    cart = list(session['cart'])
-    cart.append(product_id)
-    session['cart'] = cart
-    session.modified = True 
-    
-    return jsonify({"status": "success", "cart_count": len(session['cart'])})
-
-@app.route('/cart')
-def cart():
-    if 'cart' not in session or not session['cart']:
-        return render_template('cart.html', products=[], total=0, title="Shopping Cart")
-    
-    product_ids = session['cart']
-    cart_products = [Product.query.get(pid) for pid in product_ids if Product.query.get(pid)]
-    total = sum(p.price for p in cart_products)
-    
-    return render_template('cart.html', products=cart_products, total=total, title="Shopping Cart")
-
-@app.route('/clear_cart')
-def clear_cart():
-    session.pop('cart', None)
-    flash('Cart cleared successfully.', 'success')
-    return redirect(url_for('cart'))
 
 @app.route('/consultancy', methods=['GET', 'POST'])
 def consultancy():
     if request.method == 'POST':
         name = request.form.get('name')
-        flash(f'Thank you {name}! Your consultancy request has been sent. We will call you shortly.', 'success')
-        return redirect(url_for('home'))
+        phone = request.form.get('phone') # Captured from form
+        message = request.form.get('message')
+        
+        if name and phone:
+            new_lead = ConsultancyRequest(name=name, phone=phone, message=message)
+            db.session.add(new_lead)
+            db.session.commit()
+            flash(f'Thank you {name}! We have received your request and will call you shortly.', 'success')
+            return redirect(url_for('home'))
+        flash('Name and Phone are required.', 'danger')
+        
     return render_template('consultancy.html', title="Expert Consultancy")
 
-# 3. RUNNER
+# --- SECURE ADMIN DASHBOARD ---
+@app.route('/admin_portal')
+@login_required
+def admin_dashboard():
+    # Elite Access Control: Check if current user is marked as admin in DB
+    if not current_user.is_admin:
+        abort(403) 
+    
+    all_reviews = Review.query.order_by(Review.date_posted.desc()).all()
+    all_consultancies = ConsultancyRequest.query.order_by(ConsultancyRequest.date_requested.desc()).all()
+    
+    return render_template('admin.html', 
+                           reviews=all_reviews, 
+                           consultancies=all_consultancies, 
+                           title="Admin Panel")
+
+@app.route('/admin/delete_review/<int:id>')
+@login_required
+def delete_review(id):
+    if not current_user.is_admin:
+        abort(403)
+    review = Review.query.get_or_404(id)
+    db.session.delete(review)
+    db.session.commit()
+    flash('Review deleted successfully.', 'info')
+    return redirect(url_for('admin_dashboard'))
+
+# 3. UTILITY ROUTES (Search, Cart, Health)
+@app.route('/product/<int:product_id>')
+def product_detail(product_id):
+    product = Product.query.get_or_404(product_id)
+    return render_template('product.html', product=product, title=product.name)
+
+@app.route('/search')
+def search():
+    query = request.args.get('q', '')
+    results = Product.query.filter(
+        (Product.name.icontains(query)) | 
+        (Product.category.icontains(query)) |
+        (Product.description.icontains(query))
+    ).all() if query else []
+    return render_template('index.html', products=results, query=query, title="Search Results")
+
+@app.route('/add_to_cart/<int:product_id>')
+def add_to_cart(product_id):
+    if 'cart' not in session: session['cart'] = []
+    cart = list(session['cart'])
+    cart.append(product_id)
+    session['cart'] = cart
+    session.modified = True 
+    return jsonify({"status": "success", "cart_count": len(session['cart'])})
+
+@app.route('/cart')
+def cart():
+    product_ids = session.get('cart', [])
+    cart_products = [Product.query.get(pid) for pid in product_ids if Product.query.get(pid)]
+    total = sum(p.price for p in cart_products)
+    return render_template('cart.html', products=cart_products, total=total, title="Shopping Cart")
+
+@app.route('/clear_cart')
+def clear_cart():
+    session.pop('cart', None)
+    return redirect(url_for('cart'))
+
+@app.route('/health')
+def health_check():
+    return "OK", 200
+
+# 4. RUNNER
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

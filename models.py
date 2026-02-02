@@ -42,10 +42,23 @@ class Review(db.Model):
     """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    location = db.Column(db.String(100), nullable=False) # e.g., 'Trans Nzoia'
+    location = db.Column(db.String(100), nullable=False) # e.g., 'Mwea, Kirinyaga'
     content = db.Column(db.Text, nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    is_approved = db.Column(db.Boolean, default=True) # Set to False if you want to moderate reviews first
+    is_approved = db.Column(db.Boolean, default=True) 
 
     def __repr__(self):
         return f"Review('{self.name}', '{self.location}', '{self.date_posted}')"
+
+class ConsultancyRequest(db.Model):
+    """
+    Lead generation model for capturing Kirinyaga farmer inquiries.
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    phone = db.Column(db.String(20), nullable=False)
+    message = db.Column(db.Text, nullable=True)
+    date_requested = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"ConsultancyRequest('{self.name}', '{self.phone}', '{self.date_requested}')"
