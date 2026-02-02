@@ -21,6 +21,7 @@ db.init_app(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
+login_manager.login_message_category = 'info'
 
 # PRODUCTION DATABASE INITIALIZATION
 with app.app_context():
@@ -37,10 +38,30 @@ def home():
     customer_reviews = Review.query.filter_by(is_approved=True).order_by(Review.date_posted.desc()).limit(3).all()
     return render_template('index.html', products=featured_products, reviews=customer_reviews, title="Home")
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Handles secure authentication for Owner and Buyers"""
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        user = User.query.filter_by(username=username).first()
+        
+        if user and bcrypt.check_password_hash(user.password, password):
+            login_user(user)
+            next_page = request.args.get('next') # Redirect to intended page after login
+            flash(f'Welcome back, {user.username}!', 'success')
+            return redirect(next_page) if next_page else redirect(url_for('home'))
+        else:
+            flash('Login Unsuccessful. Please check username and password.', 'danger')
+            
+    return render_template('login.html', title='Login')
+
 @app.route('/logout')
 @login_required
 def logout():
-    """Safely terminates the session for both Admin and Buyers"""
     logout_user()
     flash('You have been logged out. / Umelogout kwa mafanikio.', 'info')
     return redirect(url_for('home'))
@@ -55,9 +76,9 @@ def submit_review():
         new_review = Review(name=name, location=location, content=content)
         db.session.add(new_review)
         db.session.commit()
-        flash('Thank you! Your review has been submitted. / Ahsante! Maoni yako yametumwa.', 'success')
+        flash('Thank you! Your review has been submitted.', 'success')
     else:
-        flash('Please fill in all fields. / Tafadhali jaza nafasi zote.', 'danger')
+        flash('Please fill in all fields.', 'danger')
     return redirect(url_for('home'))
 
 @app.route('/consultancy', methods=['GET', 'POST'])
@@ -71,27 +92,21 @@ def consultancy():
             new_lead = ConsultancyRequest(name=name, phone=phone, message=message)
             db.session.add(new_lead)
             db.session.commit()
-            flash(f'Thank you {name}! We have received your request and will call you shortly.', 'success')
+            flash(f'Thank you {name}! We will call you shortly.', 'success')
             return redirect(url_for('home'))
         flash('Name and Phone are required.', 'danger')
         
     return render_template('consultancy.html', title="Expert Consultancy")
 
-# --- SECURE ADMIN DASHBOARD (OWNER ONLY) ---
+# --- SECURE ADMIN DASHBOARD ---
 @app.route('/admin_portal')
 @login_required
 def admin_dashboard():
-    # Strict Access Control: Rejects anyone who is not the designated Admin
     if not current_user.is_admin:
         abort(403) 
-    
     all_reviews = Review.query.order_by(Review.date_posted.desc()).all()
     all_consultancies = ConsultancyRequest.query.order_by(ConsultancyRequest.date_requested.desc()).all()
-    
-    return render_template('admin.html', 
-                           reviews=all_reviews, 
-                           consultancies=all_consultancies, 
-                           title="Admin Panel")
+    return render_template('admin.html', reviews=all_reviews, consultancies=all_consultancies, title="Admin Panel")
 
 @app.route('/admin/delete_review/<int:id>')
 @login_required
@@ -101,10 +116,10 @@ def delete_review(id):
     review = Review.query.get_or_404(id)
     db.session.delete(review)
     db.session.commit()
-    flash('Review deleted successfully.', 'info')
+    flash('Review deleted.', 'info')
     return redirect(url_for('admin_dashboard'))
 
-# 3. UTILITY ROUTES (Search, Cart, Health)
+# 3. UTILITY ROUTES
 @app.route('/product/<int:product_id>')
 def product_detail(product_id):
     product = Product.query.get_or_404(product_id)
