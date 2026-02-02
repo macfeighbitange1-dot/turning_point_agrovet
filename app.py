@@ -3,7 +3,7 @@ from flask import Flask, render_template, url_for, flash, redirect, request, abo
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 
-# Import the db and models (Added ConsultancyRequest)
+# Import the db and models
 from models import db, Product, User, Review, ConsultancyRequest
 
 app = Flask(__name__)
@@ -30,12 +30,20 @@ with app.app_context():
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# 2. PUBLIC ROUTES
+# 2. PUBLIC & AUTH ROUTES
 @app.route('/')
 def home():
     featured_products = Product.query.order_by(Product.date_added.desc()).limit(6).all()
     customer_reviews = Review.query.filter_by(is_approved=True).order_by(Review.date_posted.desc()).limit(3).all()
     return render_template('index.html', products=featured_products, reviews=customer_reviews, title="Home")
+
+@app.route('/logout')
+@login_required
+def logout():
+    """Safely terminates the session for both Admin and Buyers"""
+    logout_user()
+    flash('You have been logged out. / Umelogout kwa mafanikio.', 'info')
+    return redirect(url_for('home'))
 
 @app.route('/submit_review', methods=['POST'])
 def submit_review():
@@ -56,7 +64,7 @@ def submit_review():
 def consultancy():
     if request.method == 'POST':
         name = request.form.get('name')
-        phone = request.form.get('phone') # Captured from form
+        phone = request.form.get('phone')
         message = request.form.get('message')
         
         if name and phone:
@@ -69,11 +77,11 @@ def consultancy():
         
     return render_template('consultancy.html', title="Expert Consultancy")
 
-# --- SECURE ADMIN DASHBOARD ---
+# --- SECURE ADMIN DASHBOARD (OWNER ONLY) ---
 @app.route('/admin_portal')
 @login_required
 def admin_dashboard():
-    # Elite Access Control: Check if current user is marked as admin in DB
+    # Strict Access Control: Rejects anyone who is not the designated Admin
     if not current_user.is_admin:
         abort(403) 
     
