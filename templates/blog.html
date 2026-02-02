@@ -1,27 +1,179 @@
 {% extends "base.html" %}
 {% block content %}
-<div style="padding: 4rem 5%;">
-    <h1 style="text-align: center; color: var(--primary); margin-bottom: 1rem;">Farming Intelligence Blog</h1>
-    <p style="text-align: center; color: #666; margin-bottom: 3rem;">Expert tips for the Kirinyaga Farmer.</p>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
-        <div style="border: 1px solid #eee; border-radius: 8px; overflow: hidden; background: white;">
-            <div style="padding: 1.5rem;">
-                <small style="color: var(--primary); font-weight: bold;">CROP MANAGEMENT</small>
-                <h3 style="margin: 0.5rem 0;">Maximizing Tomato Yields in Mwea</h3>
-                <p style="font-size: 0.9rem; color: #555;">Discover the best fertilizers and irrigation schedules for the current season...</p>
-                <a href="#" style="color: var(--primary); text-decoration: none; font-weight: bold;">Read More →</a>
-            </div>
+<style>
+    :root {
+        --text-dark: #1a1a1a;
+        --text-muted: #4a4a4a;
+        --accent-green: #2d5a27;
+        --bg-light: #f9fbf9;
+    }
+
+    .blog-wrapper {
+        max-width: 850px;
+        margin: 0 auto;
+        padding: 5rem 5%;
+        font-family: 'Inter', sans-serif;
+        line-height: 1.85;
+        color: var(--text-dark);
+    }
+
+    .blog-header {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+
+    .category-tag {
+        background: rgba(45, 90, 39, 0.1);
+        color: var(--accent-green);
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    .blog-title {
+        font-size: 3.2rem;
+        font-weight: 800;
+        margin: 1.5rem 0;
+        line-height: 1.1;
+        letter-spacing: -1px;
+    }
+
+    .author-meta {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+    }
+
+    .blog-content {
+        font-size: 1.15rem;
+    }
+
+    .blog-content h2 {
+        font-size: 2rem;
+        margin-top: 3.5rem;
+        margin-bottom: 1.5rem;
+        color: var(--accent-green);
+        font-weight: 700;
+    }
+
+    .blog-content p {
+        margin-bottom: 2rem;
+    }
+
+    .highlight-card {
+        background: var(--bg-light);
+        border-left: 6px solid var(--accent-green);
+        padding: 2.5rem;
+        margin: 3rem 0;
+        border-radius: 0 15px 15px 0;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    }
+
+    .outbound-link {
+        color: var(--accent-green);
+        text-decoration: underline;
+        font-weight: 600;
+    }
+
+    .keyword-pill {
+        font-weight: 700;
+        color: var(--accent-green);
+    }
+
+    .cta-banner {
+        background: linear-gradient(135deg, #1e3d1a 0%, #2d5a27 100%);
+        color: white;
+        padding: 3rem;
+        border-radius: 20px;
+        margin-top: 5rem;
+        text-align: center;
+    }
+
+    .cta-button {
+        display: inline-block;
+        background: white;
+        color: var(--accent-green);
+        padding: 1rem 2.5rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 800;
+        margin-top: 1.5rem;
+        transition: transform 0.3s ease;
+    }
+
+    .cta-button:hover {
+        transform: translateY(-3px);
+    }
+
+    @media (max-width: 768px) {
+        .blog-title { font-size: 2.2rem; }
+        .blog-wrapper { padding: 3rem 5%; }
+    }
+</style>
+
+<article class="blog-wrapper">
+    <header class="blog-header">
+        <span class="category-tag">Strategic Agronomy</span>
+        <h1 class="blog-title">The Mwea Rice Manifesto: Precision Science for the 2026 Season</h1>
+        <div class="author-meta">
+            <span>By Turning Point Agronomy Unit</span>
+            <span>•</span>
+            <span>7 Min Read</span>
+        </div>
+    </header>
+
+    <div class="blog-content">
+        <p class="lead" style="font-size: 1.4rem; color: var(--text-muted); font-weight: 300;">
+            The <span class="keyword-pill">Mwea Irrigation Scheme</span> accounts for over 80% of Kenya's total rice production. Yet, despite being the nation's rice basket, the average yield per acre remains stagnant compared to global benchmarks. At Turning Point Agrovet, our diagnostic tours through <span class="keyword-pill">Wang'uru, Ngurubani, and Kutus</span> have revealed a critical disconnect between traditional farming and modern agricultural science.
+        </p>
+
+        <div class="highlight-card">
+            <h3>The Yield Gap Reality</h3>
+            <p>While an average farmer in Vietnam or Thailand hits 7-9 tonnes per hectare, many Mwea farmers are trapped at 4-5 tonnes. This "Yield Gap" isn't caused by a lack of hard work; it's caused by <span class="keyword-pill">Soil Fatigue</span> and inefficient nutrient cycling.</p>
         </div>
 
-        <div style="border: 1px solid #eee; border-radius: 8px; overflow: hidden; background: white;">
-            <div style="padding: 1.5rem;">
-                <small style="color: var(--primary); font-weight: bold;">SOIL HEALTH</small>
-                <h3 style="margin: 0.5rem 0;">Why Soil Testing is a Game Changer</h3>
-                <p style="font-size: 0.9rem; color: #555;">Stop guessing and start measuring. How soil pH affects your profit margins...</p>
-                <a href="#" style="color: var(--primary); text-decoration: none; font-weight: bold;">Read More →</a>
-            </div>
+        <h2>The Invisible Enemy: Sub-Surface Soil Acidity</h2>
+        <p>Decades of continuous flood irrigation in the <span class="keyword-pill">Thiba and Nyamindi</span> basins have led to a phenomenon called "Nutrient Leaching." Basic cations (Calcium and Magnesium) are washed away, leaving behind acidic Aluminum ions. When your soil pH drops below 5.5, your fertilizers (DAP/Urea) don't work—they get "locked" in the soil chemistry.</p>
+        
+        <p>To understand the chemistry behind this, we recommend reviewing the <a href="https://www.kalro.org/" class="outbound-link" target="_blank" rel="noopener">KALRO Soil Management Guidelines</a>. At Turning Point, we advise farmers to incorporate <strong>Agricultural Lime</strong> at least 30 days before transplanting to "unlock" these minerals.</p>
+
+        
+
+        <h2>Integrated Pest Management: The Stem Borer Crisis</h2>
+        <p>The <span class="keyword-pill">Yellow Stem Borer (Scirpophaga incertulas)</span> is no longer a seasonal nuisance; it is an economic threat. Traditional "blanket spraying" is failing because the larvae hide inside the stem, protected from contact pesticides. Our 0.1% solution involves a three-tier defense:</p>
+        <ul>
+            <li><strong>Pheromone Trapping:</strong> Monitoring moth flights to predict outbreaks before they happen.</li>
+            <li><strong>Systemic Rotations:</strong> Alternating active ingredients to prevent resistance. If you used Lambda-cyhalothrin last season, you must switch to a different mode of action.</li>
+            <li><strong>Post-Harvest Hygiene:</strong> Burning or deep-ploughing stubble to kill hibernating larvae.</li>
+        </ul>
+
+        <h2>The SRI Revolution: More Rice with Less Water</h2>
+        <p>The <a href="http://sri.ciifad.cornell.edu/" class="outbound-link" target="_blank" rel="noopener">System of Rice Intensification (SRI)</a> is arguably the most significant advancement for the modern Mwea farmer. Contrary to popular belief, rice is not an aquatic plant; it merely <em>tolerates</em> water. SRI focuses on:</p>
+        <ol>
+            <li><strong>Young Seedlings:</strong> Transplanting at 8-12 days instead of the usual 21-30 days to maximize tillering potential.</li>
+            <li><strong>Square Spacing:</strong> Moving to a 25cm x 25cm grid to allow for mechanical weeding and solar penetration.</li>
+            <li><strong>AWD (Alternate Wetting and Drying):</strong> Reducing methane emissions and strengthening root structures by allowing the soil to breathe.</li>
+        </ol>
+
+        
+
+        <h2>Nutrient Timing: The Panicle Initiation Window</h2>
+        <p>Nitrogen is often applied in excess in Kirinyaga, leading to "lodging" (falling over) and neck blast disease. The secret to heavy grains lies in the <strong>Panicle Initiation (PI)</strong> stage. This is the moment the rice plant decides how many grains each head will carry. Applying a high-quality NPK blend exactly at this window can increase grain weight by up to 25%.</p>
+
+        <p>For detailed technical data on grain filling, the <a href="https://www.irri.org/" class="outbound-link" target="_blank" rel="noopener">International Rice Research Institute (IRRI)</a> provides excellent peer-reviewed resources on tropical rice varieties like our local <span class="keyword-pill">Basmati 370 (Pishori)</span>.</p>
+
+        <div class="cta-banner">
+            <h2>Ready to Transform Your Yield?</h2>
+            <p>Don't leave your harvest to luck. Our agronomists are ready to conduct soil tests and provide a customized "Crop Nutrition Program" for your specific farm in Mwea or Kutus.</p>
+            <a href="{{ url_for('consultancy') }}" class="cta-button">Book Your Farm Audit Now</a>
         </div>
     </div>
-</div>
+</article>
+
 {% endblock %}
