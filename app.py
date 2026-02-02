@@ -68,7 +68,7 @@ def login():
             login_user(user)
             flash(f'Welcome back, {user.username}!', 'success')
             return redirect(url_for('admin_dashboard' if user.is_admin else 'home'))
-        flash('Login Unsuccessful.', 'danger')
+        flash('Login Unsuccessful. Please check credentials.', 'danger')
     return render_template('login.html', title='Login')
 
 @app.route('/logout')
@@ -94,7 +94,6 @@ def consultancy():
 
 @app.route('/submit_review', methods=['POST'])
 def submit_review():
-    """Handles submission of customer reviews from the homepage."""
     name = request.form.get('name')
     location = request.form.get('location')
     content = request.form.get('review')
@@ -105,23 +104,32 @@ def submit_review():
         flash('Thank you! Your review has been submitted.', 'success')
     return redirect(url_for('home'))
 
-# --- SECURE RECOVERY & ADMIN ---
+# --- SECURE RECOVERY & ADMIN SETUP ---
 @app.route('/recovery/<string:secret_key>')
 def secure_recovery(secret_key):
+    """Surgical Database Reset: Deletes old admin and creates new one with Kirinyaga2026!"""
     master_key = os.environ.get('RECOVERY_KEY')
     if not master_key or secret_key != master_key:
         abort(404) 
-    admin = User.query.filter_by(username='turning_admin').first()
-    new_password = os.environ.get('ADMIN_PASSWORD', 'admin123')
-    hashed_pw = bcrypt.generate_password_hash(new_password).decode('utf-8')
-    if admin:
-        admin.password = hashed_pw
-        admin.is_admin = True
-    else:
-        admin = User(username='turning_admin', email='admin@tp.com', password=hashed_pw, is_admin=True)
-        db.session.add(admin)
+
+    # Delete any existing admin to prevent session/ID conflicts
+    existing_admin = User.query.filter_by(username='turning_admin').first()
+    if existing_admin:
+        db.session.delete(existing_admin)
+        db.session.commit()
+    
+    # Create fresh admin with the specific password requested
+    hashed_pw = bcrypt.generate_password_hash('Kirinyaga2026!').decode('utf-8')
+    admin = User(
+        username='turning_admin', 
+        email='admin@tp.com', 
+        password=hashed_pw, 
+        is_admin=True
+    )
+    db.session.add(admin)
     db.session.commit()
-    return "Admin Credentials Synced Successfully."
+    
+    return "DATABASE REFRESHED: Login with 'turning_admin' and 'Kirinyaga2026!'"
 
 @app.route('/admin_portal')
 @login_required
