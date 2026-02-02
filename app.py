@@ -23,7 +23,6 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
 # PRODUCTION DATABASE INITIALIZATION
-# This ensures tables are created even when running via Gunicorn on Render
 with app.app_context():
     db.create_all()
 
@@ -43,6 +42,11 @@ def product_detail(product_id):
     return render_template('product.html', product=product, title=product.name)
     @app.route('/health')
 def health_check():
+    return "OK", 200
+
+@app.route('/health')
+def health_check():
+    """Route for Cron-job.org to keep the server awake"""
     return "OK", 200
 
 @app.route('/search')
