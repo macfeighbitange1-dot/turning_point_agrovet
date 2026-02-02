@@ -1,12 +1,13 @@
 from app import app
-from models import db, Product
+from models import db, Product, Review # Ensure Review is in your models.py
 
 def seed_database():
     with app.app_context():
-        # Clear existing to avoid duplicates
+        # Clear existing to avoid duplicates and reset schema
         db.drop_all()
         db.create_all()
 
+        # 1. Seed Products
         products = [
             Product(
                 name="Premium Crop Solution", 
@@ -87,9 +88,30 @@ def seed_database():
             )
         ]
 
+        # 2. Seed Initial Testimonials (English & Swahili)
+        reviews = [
+            Review(
+                name="Peter Kamau",
+                location="Trans Nzoia",
+                content="The Hybrid Maize seeds gave me a 40% higher yield this season. Excellent quality!"
+            ),
+            Review(
+                name="Mary Atieno",
+                location="Uasin Gishu",
+                content="Huduma zao ni za kipekee. Mbolea ya DAP ilifika kwa wakati na mazao yangu yameongezeka sana."
+            ),
+            Review(
+                name="David Kipkorir",
+                location="Kericho",
+                content="Turning Point is the only place I trust for genuine chemicals. No more fake pesticides."
+            )
+        ]
+
         db.session.bulk_save_objects(products)
+        db.session.bulk_save_objects(reviews)
         db.session.commit()
-        print("🚀 Turning Point Agrovet: Real Inventory Loaded Successfully!")
+        
+        print("🚀 Turning Point Agrovet: Products & Reviews Seeded Successfully!")
 
 if __name__ == "__main__":
     seed_database()

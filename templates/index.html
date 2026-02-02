@@ -13,7 +13,6 @@
         color: white;
     }
 
-    /* The Slideshow Container */
     .hero-slideshow {
         position: absolute;
         top: 0; left: 0; width: 100%; height: 100%;
@@ -26,44 +25,40 @@
         background-size: cover;
         background-position: center;
         opacity: 0;
-        /* Slower 45s cycle (9s per image) for a more professional, clear look */
         animation: slideAnimation 45s infinite linear; 
-        filter: brightness(1.1); /* Increases image clarity */
+        filter: brightness(1.1);
     }
 
-    /* Professional Image Sources for your specific farms */
     .slide:nth-child(1) { 
-        background-image: url('https://images.unsplash.com/photo-1536330491564-c39c20077c9a?q=80&w=2000'); /* Rice Farm */
+        background-image: url('https://images.unsplash.com/photo-1536330491564-c39c20077c9a?q=80&w=2000');
         animation-delay: 0s; 
-        opacity: 1; /* Ensure first image is visible immediately */
+        opacity: 1;
     }
     .slide:nth-child(2) { 
-        background-image: url('https://images.unsplash.com/photo-1597333332871-d90d44283c05?q=80&w=2000'); /* Tea Farm */
+        background-image: url('https://images.unsplash.com/photo-1597333332871-d90d44283c05?q=80&w=2000');
         animation-delay: 9s; 
     }
     .slide:nth-child(3) { 
-        background-image: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2000'); /* Coffee Farm */
+        background-image: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2000');
         animation-delay: 18s; 
     }
     .slide:nth-child(4) { 
-        background-image: url('https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?q=80&w=2000'); /* Dairy Cows */
+        background-image: url('https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?q=80&w=2000');
         animation-delay: 27s; 
     }
     .slide:nth-child(5) { 
-        background-image: url('https://images.unsplash.com/photo-1544070078-a212eda27b49?q=80&w=2000'); /* Pigs */
+        background-image: url('https://images.unsplash.com/photo-1544070078-a212eda27b49?q=80&w=2000');
         animation-delay: 36s; 
     }
 
-    /* Optimized Keyframes for clarity and smooth transitions */
     @keyframes slideAnimation {
         0% { opacity: 0; }
-        2% { opacity: 1; }   /* Quick fade in */
-        18% { opacity: 1; }  /* Stay fully clear for most of the duration */
-        22% { opacity: 0; }  /* Gentle fade out */
+        2% { opacity: 1; }
+        18% { opacity: 1; }
+        22% { opacity: 0; }
         100% { opacity: 0; }
     }
 
-    /* The Permanent Green Overlay for readability */
     .hero-overlay {
         position: absolute;
         top: 0; left: 0; width: 100%; height: 100%;
@@ -123,7 +118,6 @@
                 <a href="{{ url_for('product_detail', product_id=product.id) }}" class="view-btn">View Details</a>
             </div>
         </div>
-
         <div class="card-content">
             <h3>{{ product.name }}</h3>
             <p>{{ product.description[:80] }}...</p>
@@ -131,7 +125,6 @@
                 <span style="font-weight: bold; color: var(--primary); font-size: 1.2rem;">KSh {{ "{:,.0f}".format(product.price) }}</span>
                 <a href="{{ url_for('product_detail', product_id=product.id) }}" style="text-decoration: none; color: var(--primary); font-weight: 600; font-size: 0.85rem;">Learn More →</a>
             </div>
-            
             <button class="buy-btn" onclick="addToCart({{ product.id }}, event)">
                 Add to Cart
             </button>
@@ -143,6 +136,41 @@
         <a href="/" style="color: var(--primary); font-weight: bold; text-decoration: none;">View All Products</a>
     </div>
     {% endfor %}
+</section>
+
+<section class="testimonials-section">
+    <h2 style="color: var(--primary); margin-bottom: 10px;">What Our Farmers Say</h2>
+    <p style="color: #666;">Maoni ya wakulima wetu kuhusu huduma zetu.</p>
+    
+    <div class="testimonial-grid">
+        <div class="testimonial-card">
+            <p>"The Hybrid Maize seeds gave me a 40% higher yield this season compared to last year. Excellent quality!"</p>
+            <span>— Peter Kamau</span>
+            <small>Trans Nzoia County</small>
+        </div>
+        <div class="testimonial-card">
+            <p>"Huduma zao ni za kipekee. Mbolea ya DAP ilifika kwa wakati na mazao yangu yameongezeka sana."</p>
+            <span>— Mary Atieno</span>
+            <small>Uasin Gishu County</small>
+        </div>
+        <div class="testimonial-card">
+            <p>"Turning Point is the only place I trust for genuine chemicals. No more fake pesticides on my farm."</p>
+            <span>— David Kipkorir</span>
+            <small>Kericho County</small>
+        </div>
+    </div>
+</section>
+
+<section class="review-container">
+    <div class="review-form">
+        <h3 style="text-align: center; color: var(--primary); margin-bottom: 1.5rem;">Leave a Review / Toa Maoni</h3>
+        <form action="#" method="POST">
+            <input type="text" name="name" placeholder="Your Name / Jina Lako" required>
+            <input type="text" name="location" placeholder="Your Location / Eneo Lako" required>
+            <textarea name="review" rows="4" placeholder="Share your experience / Shiriki uzoefu wako..." required></textarea>
+            <button type="submit">Submit Review / Tuma Maoni</button>
+        </form>
+    </div>
 </section>
 
 <script>
