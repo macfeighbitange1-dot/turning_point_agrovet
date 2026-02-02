@@ -92,6 +92,19 @@ def consultancy():
             return redirect(url_for('home'))
     return render_template('consultancy.html', title="Expert Consultancy")
 
+@app.route('/submit_review', methods=['POST'])
+def submit_review():
+    """Handles submission of customer reviews from the homepage."""
+    name = request.form.get('name')
+    location = request.form.get('location')
+    content = request.form.get('review')
+    if name and location and content:
+        new_review = Review(name=name, location=location, content=content)
+        db.session.add(new_review)
+        db.session.commit()
+        flash('Thank you! Your review has been submitted.', 'success')
+    return redirect(url_for('home'))
+
 # --- SECURE RECOVERY & ADMIN ---
 @app.route('/recovery/<string:secret_key>')
 def secure_recovery(secret_key):
@@ -118,6 +131,17 @@ def admin_dashboard():
     all_reviews = Review.query.all()
     all_consultancies = ConsultancyRequest.query.all()
     return render_template('admin.html', reviews=all_reviews, consultancies=all_consultancies, title="Admin Panel")
+
+@app.route('/admin/delete_review/<int:id>')
+@login_required
+def delete_review(id):
+    if not current_user.is_admin:
+        abort(403)
+    review = Review.query.get_or_404(id)
+    db.session.delete(review)
+    db.session.commit()
+    flash('Review deleted.', 'info')
+    return redirect(url_for('admin_dashboard'))
 
 # 3. UTILITY ROUTES
 @app.route('/product/<int:product_id>')
@@ -146,6 +170,11 @@ def cart():
     cart_products = [Product.query.get(pid) for pid in product_ids if Product.query.get(pid)]
     total = sum(p.price for p in cart_products)
     return render_template('cart.html', products=cart_products, total=total, title="Shopping Cart")
+
+@app.route('/clear_cart')
+def clear_cart():
+    session.pop('cart', None)
+    return redirect(url_for('cart'))
 
 @app.route('/health')
 def health_check():
