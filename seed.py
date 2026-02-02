@@ -7,7 +7,7 @@ def seed_database():
         db.drop_all()
         db.create_all()
 
-        # 1. Seed Products
+        # 1. Seed Products (Main Inventory)
         products = [
             Product(
                 name="Premium Crop Solution", 
@@ -88,22 +88,27 @@ def seed_database():
             )
         ]
 
-        # 2. Seed Initial Testimonials (English & Swahili)
+        # 2. Seed Localized Kirinyaga Testimonials
         reviews = [
             Review(
-                name="Peter Kamau",
-                location="Trans Nzoia",
-                content="The Hybrid Maize seeds gave me a 40% higher yield this season. Excellent quality!"
+                name="John Maina",
+                location="Mwea, Kirinyaga",
+                content="The Hybrid Rice seeds from Turning Point are the best. My yield in Mwea has doubled this season!"
             ),
             Review(
-                name="Mary Atieno",
-                location="Uasin Gishu",
-                content="Huduma zao ni za kipekee. Mbolea ya DAP ilifika kwa wakati na mazao yangu yameongezeka sana."
+                name="Mary Wambui",
+                location="Kerugoya, Kirinyaga",
+                content="Huduma bora sana! Mbolea yao ya kahawa imenisaidia sana hapa Kerugoya. Mazao ni mengi na yenye afya."
             ),
             Review(
-                name="David Kipkorir",
-                location="Kericho",
-                content="Turning Point is the only place I trust for genuine chemicals. No more fake pesticides."
+                name="Samuel Gichuru",
+                location="Kutus, Kirinyaga",
+                content="I always get my dairy meal from here. My cows in Kutus are producing more milk than ever. Quality products!"
+            ),
+            Review(
+                name="Grace Nyokabi",
+                location="Sagana, Kirinyaga",
+                content="Turning Point Agrovet provides genuine chemicals. They are the most trusted partners for farmers in Sagana."
             )
         ]
 
@@ -111,7 +116,7 @@ def seed_database():
         db.session.bulk_save_objects(reviews)
         db.session.commit()
         
-        print("🚀 Turning Point Agrovet: Products & Reviews Seeded Successfully!")
+        print("🚀 Turning Point Agrovet: Kirinyaga Inventory & Local Reviews Seeded Successfully!")
 
 if __name__ == "__main__":
     seed_database()
