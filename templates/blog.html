@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="padding: 4rem 5%;">
+    <h1 style="text-align: center; color: var(--primary); margin-bottom: 1rem;">Farming Intelligence Blog</h1>
+    <p style="text-align: center; color: #666; margin-bottom: 3rem;">Expert tips for the Kirinyaga Farmer.</p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+        <div style="border: 1px solid #eee; border-radius: 8px; overflow: hidden; background: white;">
+            <div style="padding: 1.5rem;">
+                <small style="color: var(--primary); font-weight: bold;">CROP MANAGEMENT</small>
+                <h3 style="margin: 0.5rem 0;">Maximizing Tomato Yields in Mwea</h3>
+                <p style="font-size: 0.9rem; color: #555;">Discover the best fertilizers and irrigation schedules for the current season...</p>
+                <a href="#" style="color: var(--primary); text-decoration: none; font-weight: bold;">Read More →</a>
+            </div>
+        </div>
+
+        <div style="border: 1px solid #eee; border-radius: 8px; overflow: hidden; background: white;">
+            <div style="padding: 1.5rem;">
+                <small style="color: var(--primary); font-weight: bold;">SOIL HEALTH</small>
+                <h3 style="margin: 0.5rem 0;">Why Soil Testing is a Game Changer</h3>
+                <p style="font-size: 0.9rem; color: #555;">Stop guessing and start measuring. How soil pH affects your profit margins...</p>
+                <a href="#" style="color: var(--primary); text-decoration: none; font-weight: bold;">Read More →</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
