@@ -47,14 +47,12 @@ def register():
         email = request.form.get('email')
         password = request.form.get('password')
         
-        # Check if user exists
         user_exists = User.query.filter((User.username == username) | (User.email == email)).first()
         if user_exists:
             flash('Username or Email already taken.', 'danger')
             return redirect(url_for('register'))
         
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-        # is_admin is ALWAYS False for public registrations
         new_user = User(username=username, email=email, password=hashed_password, is_admin=False)
         
         db.session.add(new_user)
@@ -86,6 +84,24 @@ def login():
             
     return render_template('login.html', title='Login')
 
+@app.route('/consultancy', methods=['GET', 'POST'])
+def consultancy():
+    """Handles farmer requests for expert advice."""
+    if request.method == 'POST':
+        name = request.form.get('name')
+        phone = request.form.get('phone')
+        message = request.form.get('message')
+        
+        if name and phone:
+            new_lead = ConsultancyRequest(name=name, phone=phone, message=message)
+            db.session.add(new_lead)
+            db.session.commit()
+            flash(f'Thank you {name}! We will call you shortly.', 'success')
+            return redirect(url_for('home'))
+        flash('Name and Phone are required.', 'danger')
+        
+    return render_template('consultancy.html', title="Expert Consultancy")
+
 # --- SECURE RECOVERY SYSTEM ---
 @app.route('/recovery/<string:secret_key>')
 def secure_recovery(secret_key):
@@ -101,7 +117,7 @@ def secure_recovery(secret_key):
     
     if admin:
         admin.password = hashed_pw
-        admin.is_admin = True # Ensures you always have your power back
+        admin.is_admin = True
     else:
         admin = User(username='turning_admin', email='admin@tp.com', 
                      password=hashed_pw, is_admin=True)
@@ -127,7 +143,7 @@ def admin_dashboard():
     all_consultancies = ConsultancyRequest.query.order_by(ConsultancyRequest.date_requested.desc()).all()
     return render_template('admin.html', reviews=all_reviews, consultancies=all_consultancies, title="Admin Panel")
 
-# (Rest of utility routes: search, cart, etc. remain the same)
+# 3. UTILITY ROUTES
 @app.route('/search')
 def search():
     query = request.args.get('q', '')
