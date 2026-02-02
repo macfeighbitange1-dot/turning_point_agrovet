@@ -6,15 +6,26 @@
     <meta name="theme-color" content="#2d5a27">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/logo.png') }}">
     
     <title>Turning Point Agrovet | Professional Farming Solutions</title>
+    
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo">TURNING POINT <span>AGROVET</span></div>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='img/logo.png') }}" 
+                 alt="Turning Point Agrovet" 
+                 fetchpriority="high" 
+                 style="height: 40px; vertical-align: middle; margin-right: 10px;">
+            TURNING POINT <span>AGROVET</span>
+        </div>
         
         <div class="nav-container">
             <form action="/search" method="GET" class="search-form">
@@ -93,18 +104,20 @@
 
     <a href="https://wa.me/254722415182?text=Hello%20Turning%20Point%20Agrovet,%20I%20am%20interested%20in%20your%20products." 
        class="whatsapp-float" 
-       target="_blank">
+       target="_blank"
+       rel="noopener">
         <svg style="width:35px;height:35px" viewBox="0 0 24 24">
             <path fill="currentColor" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.23 8.23 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23-1.48 0-2.93-.39-4.19-1.15l-.3-.17-3.12.82.83-3.04-.19-.3a8.23 8.23 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m-3.53 4.75c-.19 0-.52.07-.79.37-.27.3-1.03 1.01-1.03 2.47s1.06 2.87 1.21 3.07c.15.19 2.09 3.19 5.05 4.48.7.3 1.26.48 1.68.62.71.22 1.35.19 1.86.12.57-.08 1.74-.71 1.99-1.4s.25-1.27.17-1.4c-.07-.12-.27-.19-.57-.34s-1.75-.86-2.02-.96-.47-.15-.67.15-.77.96-.94 1.15c-.17.19-.34.21-.64.06-.3-.15-1.26-.47-2.39-1.48-.88-.79-1.48-1.76-1.65-2.05-.17-.3-.02-.46.13-.61l.45-.53c.15-.19.2-.32.3-.53s.05-.4-.02-.55-.67-1.6-.92-2.2c-.24-.59-.49-.51-.67-.51" />
         </svg>
     </a>
 
     <script>
+        // Service Worker with Cache-First Strategy registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/static/sw.js')
-                .then(reg => console.log('Service Worker registered.'))
-                .catch(err => console.log('Service Worker registration failed.', err));
+                .then(reg => console.log('Performance Optimization Active: Service Worker Registered.'))
+                .catch(err => console.log('Service Worker failed.', err));
             });
         }
     </script>
@@ -123,7 +136,7 @@
         .flash-info { background: #d1ecf1; color: #0c5460; }
         .flash-danger { background: #f8d7da; color: #721c24; }
 
-        /* Footer Updates */
+        /* Footer Styles */
         .main-footer { padding: 3rem 5% 1.5rem; background: #1e3d1a; color: white; margin-top: 4rem; }
         .footer-container { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 30px; text-align: left; max-width: 1200px; margin: 0 auto; }
         .footer-section h4 { color: #c8e6c9; margin-bottom: 1.2rem; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }

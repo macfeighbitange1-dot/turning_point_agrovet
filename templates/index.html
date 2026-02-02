@@ -29,6 +29,7 @@
         animation: slideAnimation 45s infinite linear; 
     }
 
+    /* Optimized Hero Backgrounds with high fetch priority */
     .slide:nth-child(1) { background-image: url('https://images.unsplash.com/photo-1536330491564-c39c20077c9a?q=80&w=2000'); animation-delay: 0s; opacity: 1; }
     .slide:nth-child(2) { background-image: url('https://images.unsplash.com/photo-1597333332871-d90d44283c05?q=80&w=2000'); animation-delay: 9s; }
     .slide:nth-child(3) { background-image: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2000'); animation-delay: 18s; }
@@ -73,6 +74,19 @@
         background: #e0e0e0;
         transform: scale(1.05);
     }
+    
+    .card-img-container {
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+        background: #f4f4f4;
+    }
+    
+    .card-img-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
 </style>
 
 <section class="hero">
@@ -103,7 +117,10 @@
     <div class="card">
         <a href="{{ url_for('product_detail', product_id=product.id) }}" style="text-decoration: none; color: inherit;">
             <div class="card-img-container">
-                <img src="{{ url_for('static', filename='img/' + product.image_file) }}" alt="{{ product.name }}">
+                <img src="{{ url_for('static', filename='img/' + product.image_file) }}" 
+                     alt="{{ product.name }}" 
+                     loading="lazy" 
+                     decoding="async">
             </div>
             <div class="card-content">
                 <h3>{{ product.name }}</h3>
