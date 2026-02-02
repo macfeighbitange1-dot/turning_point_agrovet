@@ -2,6 +2,7 @@
 {% block content %}
 
 <style>
+    /* Hero specific overrides for smooth animation */
     .hero {
         position: relative;
         height: 70vh;
@@ -26,31 +27,13 @@
         background-position: center;
         opacity: 0;
         animation: slideAnimation 45s infinite linear; 
-        filter: brightness(1.1);
     }
 
-    /* Optimized slide delays for smooth transitions */
-    .slide:nth-child(1) { 
-        background-image: url('https://images.unsplash.com/photo-1536330491564-c39c20077c9a?q=80&w=2000');
-        animation-delay: 0s; 
-        opacity: 1;
-    }
-    .slide:nth-child(2) { 
-        background-image: url('https://images.unsplash.com/photo-1597333332871-d90d44283c05?q=80&w=2000');
-        animation-delay: 9s; 
-    }
-    .slide:nth-child(3) { 
-        background-image: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2000');
-        animation-delay: 18s; 
-    }
-    .slide:nth-child(4) { 
-        background-image: url('https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?q=80&w=2000');
-        animation-delay: 27s; 
-    }
-    .slide:nth-child(5) { 
-        background-image: url('https://images.unsplash.com/photo-1544070078-a212eda27b49?q=80&w=2000');
-        animation-delay: 36s; 
-    }
+    .slide:nth-child(1) { background-image: url('https://images.unsplash.com/photo-1536330491564-c39c20077c9a?q=80&w=2000'); animation-delay: 0s; opacity: 1; }
+    .slide:nth-child(2) { background-image: url('https://images.unsplash.com/photo-1597333332871-d90d44283c05?q=80&w=2000'); animation-delay: 9s; }
+    .slide:nth-child(3) { background-image: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2000'); animation-delay: 18s; }
+    .slide:nth-child(4) { background-image: url('https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?q=80&w=2000'); animation-delay: 27s; }
+    .slide:nth-child(5) { background-image: url('https://images.unsplash.com/photo-1544070078-a212eda27b49?q=80&w=2000'); animation-delay: 36s; }
 
     @keyframes slideAnimation {
         0% { opacity: 0; }
@@ -63,7 +46,7 @@
     .hero-overlay {
         position: absolute;
         top: 0; left: 0; width: 100%; height: 100%;
-        background: linear-gradient(rgba(30, 61, 26, 0.7), rgba(30, 61, 26, 0.7));
+        background: rgba(30, 61, 26, 0.6);
         z-index: 2;
     }
 
@@ -73,22 +56,28 @@
         padding: 0 10%;
     }
 
-    .hero-content h1 {
-        font-size: 3.5rem;
-        margin-bottom: 1rem;
-        text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+    .cta-btn {
+        background: var(--white);
+        color: var(--primary);
+        border: none;
+        padding: 1rem 2rem;
+        font-weight: 700;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: var(--transition);
+        text-transform: uppercase;
+        margin-top: 1rem;
     }
 
-    .hero-content p {
-        font-size: 1.4rem;
-        margin-bottom: 2rem;
-        opacity: 0.95;
+    .cta-btn:hover {
+        background: #e0e0e0;
+        transform: scale(1.05);
     }
 </style>
 
 <section class="hero">
     <div class="hero-slideshow">
-        <div class="slide" style="opacity: 1;"></div>
+        <div class="slide"></div>
         <div class="slide"></div>
         <div class="slide"></div>
         <div class="slide"></div>
@@ -97,35 +86,31 @@
     <div class="hero-overlay"></div>
     <div class="hero-content">
         <h1>Empowering Kirinyaga's Modern Farmers</h1>
-        <p>Providing Mwea, Kerugoya, and Kutus with science-backed agricultural solutions.</p>
-        <button class="cta-btn" onclick="document.querySelector('.product-grid').scrollIntoView({behavior: 'smooth'})">Explore Our Catalog</button>
+        <p>Providing Mwea, Kerugoya, and Kutus with science-backed solutions.</p>
+        <button class="cta-btn" onclick="document.querySelector('.product-grid').scrollIntoView({behavior: 'smooth'})">Explore Catalog</button>
     </div>
 </section>
 
 {% if query %}
-<div style="padding: 2rem 10% 0 10%; text-align: left;">
-    <h2 style="color: var(--primary); margin-bottom: 0.5rem;">Search Results for "{{ query }}"</h2>
-    <p style="color: #666;">Found {{ products|length }} product(s) matching your request.</p>
-    <hr style="border: 0; border-top: 1px solid #eee; margin-top: 1.5rem;">
+<div style="padding: 2rem 5% 0 5%;">
+    <h2 style="color: var(--primary); margin-bottom: 0.5rem;">Results for "{{ query }}"</h2>
+    <p style="color: #666;">Found {{ products|length }} product(s)</p>
 </div>
 {% endif %}
 
-<section class="product-grid" style="padding: 3rem 10%;">
+<section class="product-grid">
     {% for product in products %}
     <div class="card">
-        <div class="card-img-container">
-            <img src="{{ url_for('static', filename='img/' + product.image_file) }}" alt="{{ product.name }}">
-            <div class="card-overlay">
-                <a href="{{ url_for('product_detail', product_id=product.id) }}" class="view-btn">View Details</a>
+        <a href="{{ url_for('product_detail', product_id=product.id) }}" style="text-decoration: none; color: inherit;">
+            <div class="card-img-container">
+                <img src="{{ url_for('static', filename='img/' + product.image_file) }}" alt="{{ product.name }}">
             </div>
-        </div>
-        <div class="card-content">
-            <h3>{{ product.name }}</h3>
-            <p>{{ product.description[:80] }}...</p>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; margin-bottom: 1rem;">
-                <span style="font-weight: bold; color: var(--primary); font-size: 1.2rem;">KSh {{ "{:,.0f}".format(product.price) }}</span>
-                <a href="{{ url_for('product_detail', product_id=product.id) }}" style="text-decoration: none; color: var(--primary); font-weight: 600; font-size: 0.85rem;">Learn More →</a>
+            <div class="card-content">
+                <h3>{{ product.name }}</h3>
+                <p class="price">KSh {{ "{:,.0f}".format(product.price) }}</p>
             </div>
+        </a>
+        <div style="padding: 0 12px 12px 12px;">
             <button class="buy-btn" onclick="addToCart({{ product.id }}, event)">
                 Add to Cart
             </button>
@@ -133,15 +118,15 @@
     </div>
     {% else %}
     <div style="grid-column: 1 / -1; text-align: center; padding: 4rem;">
-        <h3 style="color: #888;">No products found matching your search.</h3>
-        <a href="/" style="color: var(--primary); font-weight: bold; text-decoration: none;">View All Products</a>
+        <h3 style="color: #888;">No products found.</h3>
+        <a href="/" style="color: var(--primary); font-weight: bold;">View All Products</a>
     </div>
     {% endfor %}
 </section>
 
 <section class="testimonials-section">
-    <h2 style="color: var(--primary); margin-bottom: 10px;">Voices of Kirinyaga Farmers</h2>
-    <p style="color: #666;">Maoni ya wakulima wa Kirinyaga kuhusu huduma zetu.</p>
+    <h2 style="color: var(--primary);">Voices of Kirinyaga Farmers</h2>
+    <p style="color: #666;">Maoni ya wakulima wa Kirinyaga.</p>
     
     <div class="testimonial-grid">
         {% if reviews %}
@@ -164,12 +149,12 @@
 
 <section class="review-container">
     <div class="review-form">
-        <h3 style="text-align: center; color: var(--primary); margin-bottom: 1.5rem;">Leave a Review / Toa Maoni</h3>
+        <h3>Leave a Review / Toa Maoni</h3>
         <form action="{{ url_for('submit_review') }}" method="POST">
-            <input type="text" name="name" placeholder="Your Name / Jina Lako" required>
-            <input type="text" name="location" placeholder="Your Village or Town in Kirinyaga" required>
-            <textarea name="review" rows="4" placeholder="Share your experience / Shiriki uzoefu wako..." required></textarea>
-            <button type="submit">Submit Review / Tuma Maoni</button>
+            <input type="text" name="name" placeholder="Your Name" required>
+            <input type="text" name="location" placeholder="Village or Town" required>
+            <textarea name="review" rows="4" placeholder="Share your experience..." required></textarea>
+            <button type="submit">Submit Review</button>
         </form>
     </div>
 </section>

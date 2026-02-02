@@ -11,10 +11,10 @@
 body {
     font-family: 'Inter', sans-serif;
     margin: 0;
-    background-color: var(--white);
+    background-color: #f1f1f1; /* Light gray background to make white cards "pop" like Jumia */
     color: var(--primary);
     line-height: 1.6;
-    overflow-x: hidden; /* Prevents awkward side-scrolling on mobile */
+    overflow-x: hidden;
 }
 
 /* --- NAVIGATION --- */
@@ -65,14 +65,8 @@ nav ul li a:hover { color: #c8e6c9; }
     background-position: center;
     opacity: 0;
     animation: slideAnimation 45s infinite linear;
-    filter: brightness(0.8); /* Darkened for better text readability */
+    filter: brightness(0.8);
 }
-
-.slide:nth-child(1) { background-image: url('https://images.unsplash.com/photo-1536330491564-c39c20077c9a?q=80&w=2000'); animation-delay: 0s; }
-.slide:nth-child(2) { background-image: url('https://images.unsplash.com/photo-1597333332871-d90d44283c05?q=80&w=2000'); animation-delay: 9s; }
-.slide:nth-child(3) { background-image: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2000'); animation-delay: 18s; }
-.slide:nth-child(4) { background-image: url('https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?q=80&w=2000'); animation-delay: 27s; }
-.slide:nth-child(5) { background-image: url('https://images.unsplash.com/photo-1544070078-a212eda27b49?q=80&w=2000'); animation-delay: 36s; }
 
 @keyframes slideAnimation {
     0% { opacity: 0; }
@@ -97,39 +91,82 @@ nav ul li a:hover { color: #c8e6c9; }
 
 .hero-content h1 { font-size: clamp(2rem, 5vw, 4rem); margin-bottom: 1rem; }
 
-/* --- PRODUCT GRID --- */
+/* --- JUMIA-STYLE PRODUCT GRID --- */
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
-    padding: 2rem 5%;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 15px;
+    padding: 20px 5%;
 }
 
 .card {
     background: var(--white);
-    border: 1px solid #eee; /* Softer border for modern look */
-    border-radius: 12px;
+    border-radius: 4px;
     overflow: hidden;
     transition: var(--transition);
     display: flex;
     flex-direction: column;
     position: relative;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    border: none;
 }
 
-.card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+.card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
 
 .card-img-container {
     width: 100%;
-    height: 200px;
+    aspect-ratio: 1 / 1; /* Forces square container */
     overflow: hidden;
+    background: #fff;
 }
 
-.card img { width: 100%; height: 100%; object-fit: cover; transition: var(--transition); }
-.card:hover img { transform: scale(1.05); }
+.card img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: contain; /* Shows full product without cropping */
+    padding: 10px;
+    transition: var(--transition); 
+}
 
-.card-content { padding: 1.2rem; text-align: center; }
-.card h3 { margin: 0.5rem 0; color: var(--primary); font-size: 1.1rem; }
+.card-content { 
+    padding: 12px; 
+    text-align: left; /* Jumia style left alignment */
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.card h3 { 
+    margin: 0 0 8px 0; 
+    color: #333; 
+    font-size: 0.9rem;
+    font-weight: 400;
+    height: 2.4rem; /* Keeps grid uniform */
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.card .price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.buy-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    margin-top: auto;
+    font-size: 0.85rem;
+}
 
 /* --- CUSTOMER TESTIMONIALS SECTION --- */
 .testimonials-section {
@@ -174,7 +211,7 @@ nav ul li a:hover { color: #c8e6c9; }
     margin-bottom: 1rem;
     border: 1px solid #ddd;
     border-radius: 6px;
-    box-sizing: border-box; /* Crucial for mobile sizing */
+    box-sizing: border-box;
 }
 
 /* --- FLOATING BUTTONS & RESPONSIVENESS --- */
@@ -190,7 +227,6 @@ nav ul li a:hover { color: #c8e6c9; }
     color: var(--white);
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     z-index: 1000;
-    transition: var(--transition);
 }
 
 .whatsapp-float { bottom: 20px; background-color: var(--whatsapp); animation: pulse-green 2s infinite; }
@@ -202,45 +238,26 @@ nav ul li a:hover { color: #c8e6c9; }
     100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
 }
 
-/* --- MOBILE OPTIMIZATION --- */
+/* --- MOBILE OPTIMIZATION (JUMIA 2-COLUMN) --- */
 @media (max-width: 768px) {
-    .navbar { 
-        padding: 0.8rem 5%; 
-        flex-wrap: wrap;
-    }
+    .navbar { padding: 0.8rem 5%; }
     
-    nav ul {
-        width: 100%;
-        justify-content: center;
-        margin-top: 10px;
-        gap: 10px;
-    }
-
-    nav ul li { margin-left: 0; }
-
-    .hero { height: 60vh; }
-
     .product-grid { 
-        grid-template-columns: repeat(2, 1fr); /* Two products per row on phones */
-        gap: 12px; 
-        padding: 1rem; 
+        grid-template-columns: repeat(2, 1fr); /* 2 Columns like Jumia App */
+        gap: 8px; 
+        padding: 8px; 
     }
 
-    .card-img-container { height: 150px; }
+    .card-img-container { height: auto; }
+    .card img { padding: 5px; }
+    
+    .card-content { padding: 8px; }
+    .card h3 { font-size: 0.8rem; height: 2.2rem; }
+    .card .price { font-size: 1rem; }
 
-    .card h3 { font-size: 0.9rem; }
-
-    .review-form { padding: 1.5rem; }
-
-    /* Increase button size for touch */
-    .buy-btn, .review-form button {
-        padding: 1.2rem;
-        font-size: 1rem;
-    }
+    .buy-btn { padding: 8px; font-size: 0.8rem; }
 }
 
-@media (max-width: 480px) {
-    .product-grid {
-        grid-template-columns: 1fr; /* Single column for very small phones */
-    }
+@media (max-width: 350px) {
+    .product-grid { grid-template-columns: 1fr; }
 }
